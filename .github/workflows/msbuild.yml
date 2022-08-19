@@ -44,4 +44,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         # The ID of the draft release to publish
-        release_id: ${{github.sha}}
+        release_id: ${{ steps.create_release.outputs.id }}
