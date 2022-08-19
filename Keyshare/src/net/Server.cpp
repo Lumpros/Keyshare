@@ -32,7 +32,7 @@ void ServerSocket::ResolveServerAddress(struct addrinfo* hints, struct addrinfo*
 {
 	assert(!port.empty());
 
-	if (getaddrinfo("127.0.0.1", port.c_str(), hints, result))
+	if (getaddrinfo(NULL, port.c_str(), hints, result))
 	{
 		throw std::runtime_error("Unable to resolve the localhost information!");
 	}

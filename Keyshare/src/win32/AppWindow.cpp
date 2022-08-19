@@ -130,7 +130,7 @@ void AppWindow::CreateKeyshareWindow(HINSTANCE hInstance)
 
 	SetWindowPos(hWnd, NULL, NULL, NULL,
 		(int)round(246 * util::GetWindowScaleForDPI(hWnd) + cxWindowFrameSize),
-		(int)round(332 * util::GetWindowScaleForDPI(hWnd) + cxWindowFrameSize / 2),
+		(int)round(332 * util::GetWindowScaleForDPI(hWnd) + cxWindowFrameSize / 2.0),
 		SWP_NOZORDER | SWP_NOMOVE
 	);
 }
@@ -407,6 +407,8 @@ LRESULT AppWindow::OnCommand(WPARAM wParam)
 
 	catch (std::exception& e)
 	{
+		SAFE_DELETE_PTR(pSender);
+
 		// Because we change the title to 'Connecting...' whilst trying to connect,
 		// but if we fail to connect we throw an exception so we have to change it
 		SetWindowText(hWnd, L"Keyshare");
