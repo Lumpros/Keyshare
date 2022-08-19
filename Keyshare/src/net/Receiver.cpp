@@ -14,13 +14,27 @@ void Receiver::CreateServer(void)
 void Receiver::ProcessData(const std::string& data)
 {
 	VKDecoder decoder;
-	SendKeyToSystem(decoder.Decode((void*)data.c_str()));
+	vkcode vkc = decoder.Decode((void*)data.c_str());
+	
+	if (data[1] == '!')
+		SendKeyUpToSystem(vkc);
+	else
+		SendKeyDownToSystem(vkc);
 }
 
-void Receiver::SendKeyToSystem(vkcode vkc)
+void Receiver::SendKeyDownToSystem(vkcode vkc)
 {
 	INPUT input = { 0 };
 	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = vkc;
+	SendInput(1, &input, sizeof(INPUT));
+}
+
+void Receiver::SendKeyUpToSystem(vkcode vkc)
+{
+	INPUT input = { 0 };
+	input.type = INPUT_KEYBOARD;
+	input.ki.dwFlags = KEYEVENTF_KEYUP;
 	input.ki.wVk = vkc;
 	SendInput(1, &input, sizeof(INPUT));
 }

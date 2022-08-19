@@ -4,6 +4,8 @@
 #include <winhttp.h>
 #include <stdexcept>
 
+#include <iphlpapi.h>
+
 /* Wrapper class for HINTERNET in order to make sure that the handle is closed */
 class InternetHandle
 {
@@ -97,4 +99,24 @@ std::string	GetExternalIPAddress(void)
 	}
 
 	return GetRequestResponse(hRequest);	
+}
+
+std::string GetInternalIPAddress(void)
+{
+	char hostname[256];
+	gethostname(hostname, 256);
+
+	struct hostent* host = gethostbyname(hostname);
+
+	if (!host) 
+	{
+		return "";
+	}
+
+	UCHAR b1 = ((struct in_addr*)(host->h_addr))->S_un.S_un_b.s_b1;
+	UCHAR b2 = ((struct in_addr*)(host->h_addr))->S_un.S_un_b.s_b2;
+	UCHAR b3 = ((struct in_addr*)(host->h_addr))->S_un.S_un_b.s_b3;
+	UCHAR b4 = ((struct in_addr*)(host->h_addr))->S_un.S_un_b.s_b4;
+
+	return std::to_string(b1) + "." + std::to_string(b2) + "." + std::to_string(b3) + "." + std::to_string(b4);
 }

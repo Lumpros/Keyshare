@@ -1,5 +1,6 @@
 #include "Server.h"
 #include "Receiver.h"
+#include "IP.h"
 
 #include <WS2tcpip.h>
 
@@ -32,7 +33,7 @@ void ServerSocket::ResolveServerAddress(struct addrinfo* hints, struct addrinfo*
 {
 	assert(!port.empty());
 
-	if (getaddrinfo(NULL, port.c_str(), hints, result))
+	if (getaddrinfo(GetInternalIPAddress().c_str(), port.c_str(), hints, result))
 	{
 		throw std::runtime_error("Unable to resolve the localhost information!");
 	}

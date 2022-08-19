@@ -18,7 +18,7 @@
 // the messages will only be sent if the window has the focus.
 LRESULT CALLBACK ForwardKeypressProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR dwRefData)
 {
-	if (uMsg == WM_KEYDOWN)
+	if (uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)
 	{
 		SendMessage(reinterpret_cast<HWND>(dwRefData), uMsg, wParam, lParam);
 	}
@@ -333,6 +333,9 @@ LRESULT AppWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 	case WM_KEYDOWN:
 		return OnKeydown(wParam);
+
+	case WM_KEYUP:
+		return OnKeyup(wParam);
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
@@ -342,7 +345,7 @@ LRESULT AppWindow::OnCtlColorStatic(WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC = reinterpret_cast<HDC>(wParam);
 	HWND hStaticWnd = reinterpret_cast<HWND>(lParam);
-
+	
 	SetBkColor(hDC, RGB(245, 245, 245));
 
 	if (hStaticWnd == GetDlgItem(hWnd, IDC_STATUS_TEXT))
@@ -368,9 +371,22 @@ LRESULT AppWindow::OnKeydown(WPARAM wParam)
 {
 	if (pSender)
 	{
-		if (!pSender->SendVKCodeToServer(static_cast<vkcode>(wParam)))
+		if (!pSender->SendKeyDownToServer(static_cast<vkcode>(wParam)))
 		{
 			DisconnectFromSession(); 
+		}
+	}
+
+	return 0;
+}
+
+LRESULT AppWindow::OnKeyup(WPARAM wParam)
+{
+	if (pSender)
+	{
+		if (!pSender->SendKeyUpToServer(static_cast<vkcode>(wParam)))
+		{
+			DisconnectFromSession();
 		}
 	}
 
@@ -474,18 +490,24 @@ void AppWindow::OnJoinSessionClicked(void)
 		// Check string isn't empty
 		if (lpszSessionIP[0] != '\0')
 		{
-			StopRunningSession();
+			if (MessageBox(NULL,
+				L"If you attempt to join another session the session you're hosting will be shutdown. Do you wish to proceed?",
+				L"Join Session",
+				MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
+			{
+				StopRunningSession();
 
-			EnableWindow(GetDlgItem(hWnd, IDC_JOIN_SESSION_BUTTON), FALSE);
+				EnableWindow(GetDlgItem(hWnd, IDC_JOIN_SESSION_BUTTON), FALSE);
 
-			SAFE_DELETE_PTR(pSender);
-			pSender = new Sender();
+				SAFE_DELETE_PTR(pSender);
+				pSender = new Sender();
 
-			SetWindowText(hWnd, L"Connecting...");
-			pSender->Connect(lpszSessionIP);
-			SetWindowText(hWnd, L"Keyshare");
+				SetWindowText(hWnd, L"Connecting...");
+				pSender->Connect(lpszSessionIP);
+				SetWindowText(hWnd, L"Keyshare");
 
-			EnableWindow(GetDlgItem(hWnd, IDC_DISCONNECT_BUTTON), TRUE);
+				EnableWindow(GetDlgItem(hWnd, IDC_DISCONNECT_BUTTON), TRUE);
+			}
 		}
 	}
 }

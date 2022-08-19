@@ -9,6 +9,7 @@
 
 #include "net/WinsockInit.h"
 #include "win32/AppWindow.h"
+#include "net/IP.h"
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "Winhttp.lib")
@@ -34,11 +35,11 @@ INT APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	{
 		WinsockInit winsockInit;
 		AppWindow window;
-
+		
 		window.Show();
-
+		
 		MSG msg = {};
-
+		
 		while (GetMessage(&msg, NULL, 0, 0))
 		{
 			TranslateMessage(&msg);

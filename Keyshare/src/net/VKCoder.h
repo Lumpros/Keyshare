@@ -7,7 +7,7 @@ typedef WORD vkcode;
 class VKEncoder
 {
 public:
-	// This function assumes that the destination buffer is at least sizeof(vkcode) + 1 bytes big 
+	// This function assumes that the destination buffer is at least sizeof(vkcode) + 2 bytes big 
 	void Encode(void* dest, vkcode vkc);
 };
 

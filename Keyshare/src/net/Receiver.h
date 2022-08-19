@@ -25,6 +25,7 @@ private:
 
 	HWND hTopWindow = NULL;
 
-	void SendKeyToSystem(vkcode vkc);
+	void SendKeyDownToSystem(vkcode vkc);
+	void SendKeyUpToSystem(vkcode vkc);
 };
 

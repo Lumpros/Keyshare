@@ -9,7 +9,8 @@ class Sender
 {
 public:
 	void Connect(const std::string& serverIp);
-	bool SendVKCodeToServer(vkcode vkCode);
+	bool SendKeyDownToServer(vkcode vkCode);
+	bool SendKeyUpToServer(vkcode vkCode);
 
 private:
 	Client client;

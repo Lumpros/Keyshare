@@ -35,6 +35,7 @@ private:
 
 	LRESULT OnCtlColorStatic(WPARAM wParam, LPARAM lParam);
 	LRESULT OnKeydown(WPARAM wParam);
+	LRESULT OnKeyup(WPARAM wParam);
 
 private:
 	HWND hWnd = NULL;
